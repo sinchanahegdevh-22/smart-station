@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartStation | Next Gen Transit</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar / Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-bus-simple"></i>
+                <span>SmartStation</span>
+            </div>
+
+            <ul class="nav-links">
+                <li class="active" onclick="switchTab('dashboard')">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </li>
+                <li onclick="switchTab('crowd')">
+                    <i class="fa-solid fa-users-viewfinder"></i>
+                    <span>Crowd & Safety</span>
+                </li>
+                <li onclick="switchTab('map')">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <span>Station Map</span>
+                </li>
+                <li onclick="switchTab('tickets')">
+                    <i class="fa-solid fa-ticket"></i>
+                    <span>E-Tickets</span>
+                </li>
+            </ul>
+
+            <div class="nav-footer">
+                <button class="audio-toggle" onclick="toggleAudio()" id="audioBtn">
+                    <i class="fa-solid fa-volume-high"></i>
+                    <span>Voice Guide</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="content-area">
+
+            <!-- Header -->
+            <header>
+                <div class="header-text">
+                    <h1 id="page-title">Live Dashboard</h1>
+                    <p id="current-time">--:--</p>
+                </div>
+                <div class="user-profile">
+                    <div class="notification-badge">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="dot"></span>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff" alt="User">
+                </div>
+            </header>
+
+            <!-- DASHBOARD SECTION -->
+            <section id="dashboard" class="tab-content active">
+                <div class="cards-grid">
+                    <div class="card glass-panel">
+                        <div class="card-icon"><i class="fa-solid fa-clock"></i></div>
+                        <h3>Next Departure</h3>
+                        <h2>Bus 304 - Platform 2</h2>
+                        <p class="status-live">Arriving in 5 mins</p>
+                    </div>
+
+                    <div class="card glass-panel">
+                        <div class="card-icon"><i class="fa-solid fa-temperature-half"></i></div>
+                        <h3>Station Status</h3>
+                        <h2>Active</h2>
+                        <p>All systems normal</p>
+                    </div>
+                </div>
+
+                <div class="schedule-container glass-panel">
+                    <h3><i class="fa-solid fa-list"></i> Upcoming Departures</h3>
+                    <div class="table-responsive">
+                        <table class="schedule-table">
+                            <thead>
+                                <tr>
+                                    <th>Bus No.</th>
+                                    <th>Destination</th>
+                                    <th>Platform</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bus-schedule-body">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CROWD & SAFETY -->
+            <section id="crowd" class="tab-content">
+                <div class="crowd-grid">
+                    <div class="crowd-monitor glass-panel">
+                        <h3><i class="fa-solid fa-video"></i> Live Crowd Density</h3>
+                        <div class="crowd-visualizer" id="crowd-visualizer">
+                            <!-- JS will render bars here -->
+                        </div>
+                        <div class="legend">
+                            <span><span class="dot green"></span> Low</span>
+                            <span><span class="dot orange"></span> Medium</span>
+                            <span><span class="dot red"></span> High</span>
+                        </div>
+                    </div>
+
+                    <div class="safety-panel glass-panel">
+                        <h3>Emergency Assistance</h3>
+                        <p>Press the button below to alert station security immediately.</p>
+                        <button class="sos-btn" onclick="triggerSOS()">
+                            <i class="fa-solid fa-shield-cat"></i> SOS ALERT
+                        </button>
+                        <div id="sos-status" class="hidden">Alert Sent! Help is on the way.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MAP SECTION -->
+            <section id="map" class="tab-content">
+                <div class="map-container glass-panel">
+                    <h3>Station Layout</h3>
+                    <!-- Simple CSS Map Representation -->
+                    <div class="station-map">
+                        <div class="map-area washroom">Restroom</div>
+                        <div class="map-area waiting">Waiting Area</div>
+                        <div class="map-area platform active-pf">Platform 1</div>
+                        <div class="map-area platform">Platform 2</div>
+                        <div class="map-area shop">Food Court</div>
+                        <div class="user-position"><i class="fa-solid fa-location-dot"></i> You</div>
+                    </div>
+                    <div class="map-controls">
+                        <button onclick="announceLocation()"><i class="fa-solid fa-location-crosshairs"></i> Where am
+                            I?</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- E-TICKETS SECTION -->
+            <section id="tickets" class="tab-content">
+                <div class="ticket-split">
+                    <div class="booking-form glass-panel">
+                        <h3>Book a Ticket</h3>
+                        <form onsubmit="generateTicket(event)">
+                            <div class="form-group">
+                                <label>Destination</label>
+                                <select id="dest-select" required>
+                                    <option value="">Select City</option>
+                                    <option value="New York">New York</option>
+                                    <option value="Boston">Boston</option>
+                                    <option value="Washington DC">Washington DC</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Passengers</label>
+                                <input type="number" min="1" max="5" value="1" id="passenger-count">
+                            </div>
+                            <button type="submit" class="primary-btn">Generate Ticket</button>
+                        </form>
+                    </div>
+
+                    <div class="ticket-preview" id="ticket-result">
+                        <!-- Ticket appears here -->
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
